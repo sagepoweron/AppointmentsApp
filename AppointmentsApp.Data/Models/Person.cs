@@ -1,4 +1,4 @@
-﻿namespace AppointmentsApp.API.Models
+﻿namespace AppointmentsApp.Data.Models
 {
     public abstract class Person
     {

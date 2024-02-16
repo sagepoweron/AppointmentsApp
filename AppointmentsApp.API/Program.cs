@@ -1,3 +1,6 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using AppointmentsApp.API.Data;
 
 namespace AppointmentsApp.API
 {
@@ -6,6 +9,8 @@ namespace AppointmentsApp.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddDbContext<AppointmentsAppAPIContext>(options =>
+                options.UseSqlite(builder.Configuration.GetConnectionString("AppointmentsAppAPIContext") ?? throw new InvalidOperationException("Connection string 'AppointmentsAppAPIContext' not found.")));
 
             // Add services to the container.
 
