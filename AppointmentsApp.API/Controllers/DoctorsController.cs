@@ -1,7 +1,9 @@
 ﻿using AppointmentsApp.API.Data;
 using AppointmentsApp.Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace AppointmentsApp.API.Controllers
 {
@@ -36,6 +38,23 @@ namespace AppointmentsApp.API.Controllers
 
             return doctor;
         }
+
+        //api/Doctors/Search/name
+        [HttpGet("Search/{name}")]
+        public async Task<ActionResult<IEnumerable<Doctor>>> SearchByName(string name)
+        {
+            //RAW SQL
+            var parameter = new SqliteParameter("comparison", $"%{name}%");
+            return await _context.Doctor.FromSqlRaw("SELECT * FROM Doctor WHERE name LIKE @comparison", parameter).ToListAsync();
+            
+            //var doctors = await _context.Doctor.ToListAsync();
+            //return doctors.Where(doctor => doctor.Name.Contains(name, StringComparison.CurrentCultureIgnoreCase)).ToList();
+
+            //var query = from doctor in _context.Doctor where doctor.Name.ToLower().Contains(name.ToLower()) select doctor;
+            //return await query.ToListAsync();
+        }
+
+
 
         // PUT: api/Doctors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
