@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace AppointmentsApp.API.Controllers
 {
@@ -55,6 +56,38 @@ namespace AppointmentsApp.API.Controllers
         }
 
 
+        // POST: api/Doctors/Create
+        [HttpPost]
+        public async Task<ActionResult<Doctor>> CreateDoctor(Doctor doctor)
+        {
+            if (!string.IsNullOrEmpty(doctor.Email))
+            {
+                if (!IsValidEmail(doctor.Email))
+                {
+                    ModelState.AddModelError(nameof(doctor.Email), "The Email is invalid.");
+                }
+            }
+            
+            if (!ModelState.IsValid)
+            {
+                return Problem("Invalid information");
+            }
+
+            _context.Doctor.Add(doctor);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetDoctor", new { id = doctor.Id }, doctor);
+        }
+
+        //Regex
+        private bool IsValidEmail(string email)
+        {
+            const string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|" + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)" + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
+            var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+            return regex.IsMatch(email);
+        }
+
+
 
         // PUT: api/Doctors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -87,16 +120,17 @@ namespace AppointmentsApp.API.Controllers
             return NoContent();
         }
 
+
         // POST: api/Doctors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Doctor>> PostDoctor(Doctor doctor)
-        {
-            _context.Doctor.Add(doctor);
-            await _context.SaveChangesAsync();
+        //[HttpPost]
+        //public async Task<ActionResult<Doctor>> PostDoctor(Doctor doctor)
+        //{
+        //    _context.Doctor.Add(doctor);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDoctor", new { id = doctor.Id }, doctor);
-        }
+        //    return CreatedAtAction("GetDoctor", new { id = doctor.Id }, doctor);
+        //}
 
         // DELETE: api/Doctors/5
         [HttpDelete("{id}")]

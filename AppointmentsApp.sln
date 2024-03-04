@@ -5,7 +5,9 @@ VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppointmentsApp.API", "AppointmentsApp.API\AppointmentsApp.API.csproj", "{091B9C2B-1283-40B2-BA7A-26B850C4A297}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentsApp.Data", "AppointmentsApp.Data\AppointmentsApp.Data.csproj", "{1C2D4958-CF0C-46CE-8233-2FEEC5514E6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppointmentsApp.Data", "AppointmentsApp.Data\AppointmentsApp.Data.csproj", "{1C2D4958-CF0C-46CE-8233-2FEEC5514E6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppointmentsApp.MVC", "AppointmentsApp.MVC\AppointmentsApp.MVC.csproj", "{DB61960B-12A9-428E-A1B1-40F09179E745}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1C2D4958-CF0C-46CE-8233-2FEEC5514E6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C2D4958-CF0C-46CE-8233-2FEEC5514E6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C2D4958-CF0C-46CE-8233-2FEEC5514E6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB61960B-12A9-428E-A1B1-40F09179E745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB61960B-12A9-428E-A1B1-40F09179E745}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB61960B-12A9-428E-A1B1-40F09179E745}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB61960B-12A9-428E-A1B1-40F09179E745}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
