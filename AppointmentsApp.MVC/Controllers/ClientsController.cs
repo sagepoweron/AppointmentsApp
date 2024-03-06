@@ -6,40 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AppointmentsApp.Data.Models;
-using Microsoft.Data.Sqlite;
 using AppointmentsApp.MVC.Data;
 
 namespace AppointmentsApp.MVC.Controllers
 {
-    public class DoctorsController : Controller
+    public class ClientsController : Controller
     {
         private readonly AppointmentsAppMVCContext _context;
 
-        public DoctorsController(AppointmentsAppMVCContext context)
+        public ClientsController(AppointmentsAppMVCContext context)
         {
             _context = context;
         }
 
-        // GET: Doctors
+        // GET: Clients
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Doctor.ToListAsync());
+            return View(await _context.Client.ToListAsync());
         }
 
-
-        public async Task<IActionResult> Search(string name)
-        {
-            //RAW SQL
-            var parameter = new SqliteParameter("comparison", $"%{name}%");
-            return View(await _context.Doctor.FromSqlRaw("SELECT * FROM Doctor WHERE name LIKE @comparison", parameter).ToListAsync());
-        }
-
-
-
-
-
-
-        // GET: Doctors/Details/5
+        // GET: Clients/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -47,40 +33,40 @@ namespace AppointmentsApp.MVC.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctor
+            var client = await _context.Client
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (doctor == null)
+            if (client == null)
             {
                 return NotFound();
             }
 
-            return View(doctor);
+            return View(client);
         }
 
-        // GET: Doctors/Create
+        // GET: Clients/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Doctors/Create
+        // POST: Clients/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Phone,Email")] Doctor doctor)
+        public async Task<IActionResult> Create([Bind("Id,Name,Phone,Email")] Client client)
         {
             if (ModelState.IsValid)
             {
-                doctor.Id = Guid.NewGuid();
-                _context.Add(doctor);
+                client.Id = Guid.NewGuid();
+                _context.Add(client);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(doctor);
+            return View(client);
         }
 
-        // GET: Doctors/Edit/5
+        // GET: Clients/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -88,22 +74,22 @@ namespace AppointmentsApp.MVC.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctor.FindAsync(id);
-            if (doctor == null)
+            var client = await _context.Client.FindAsync(id);
+            if (client == null)
             {
                 return NotFound();
             }
-            return View(doctor);
+            return View(client);
         }
 
-        // POST: Doctors/Edit/5
+        // POST: Clients/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Phone,Email")] Doctor doctor)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Phone,Email")] Client client)
         {
-            if (id != doctor.Id)
+            if (id != client.Id)
             {
                 return NotFound();
             }
@@ -112,12 +98,12 @@ namespace AppointmentsApp.MVC.Controllers
             {
                 try
                 {
-                    _context.Update(doctor);
+                    _context.Update(client);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DoctorExists(doctor.Id))
+                    if (!ClientExists(client.Id))
                     {
                         return NotFound();
                     }
@@ -128,10 +114,10 @@ namespace AppointmentsApp.MVC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(doctor);
+            return View(client);
         }
 
-        // GET: Doctors/Delete/5
+        // GET: Clients/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -139,34 +125,34 @@ namespace AppointmentsApp.MVC.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctor
+            var client = await _context.Client
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (doctor == null)
+            if (client == null)
             {
                 return NotFound();
             }
 
-            return View(doctor);
+            return View(client);
         }
 
-        // POST: Doctors/Delete/5
+        // POST: Clients/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var doctor = await _context.Doctor.FindAsync(id);
-            if (doctor != null)
+            var client = await _context.Client.FindAsync(id);
+            if (client != null)
             {
-                _context.Doctor.Remove(doctor);
+                _context.Client.Remove(client);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DoctorExists(Guid id)
+        private bool ClientExists(Guid id)
         {
-            return _context.Doctor.Any(e => e.Id == id);
+            return _context.Client.Any(e => e.Id == id);
         }
     }
 }

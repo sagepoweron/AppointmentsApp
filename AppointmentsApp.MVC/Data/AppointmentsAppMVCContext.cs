@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AppointmentsApp.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using AppointmentsApp.Data.Models;
 
 namespace AppointmentsApp.MVC.Data
 {
     public class AppointmentsAppMVCContext : DbContext
     {
-        public AppointmentsAppMVCContext (DbContextOptions<AppointmentsAppMVCContext> options)
+        public AppointmentsAppMVCContext(DbContextOptions<AppointmentsAppMVCContext> options)
             : base(options)
         {
         }
@@ -48,5 +44,6 @@ namespace AppointmentsApp.MVC.Data
         }
 
         public DbSet<Doctor> Doctor { get; set; } = default!;
+        public DbSet<AppointmentsApp.Data.Models.Client> Client { get; set; } = default!;
     }
 }
