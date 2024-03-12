@@ -44,6 +44,7 @@ namespace AppointmentsApp.MVC.Data
         }
 
         public DbSet<Doctor> Doctor { get; set; } = default!;
-        public DbSet<AppointmentsApp.Data.Models.Client> Client { get; set; } = default!;
+        public DbSet<Client> Client { get; set; } = default!;
+        public DbSet<Appointment> Appointment { get; set; } = default!;
     }
 }

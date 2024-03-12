@@ -1,10 +1,10 @@
-﻿@model IEnumerable<AppointmentsApp.Data.Models.Client>
+﻿@model IEnumerable<AppointmentsApp.Data.Models.Appointment>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Clients</h1>
+<h1>Appointments</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -12,24 +12,26 @@
 
 <hr />
 
-<form asp-controller="Clients" asp-action="Index" method="get">
+<form asp-controller="Appointments" asp-action="Index" method="get">
     <p>
-        Name: <input type="text" name="name" />
-        <input type="submit" value="Filter" />
+		Client Name: <input type="text" name="client_name" />
+        Doctor Name: <input type="text" name="doctor_name" />
+		<input type="submit" value="Filter" />
     </p>
 </form>
+
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.DateTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Phone)
+                @Html.DisplayNameFor(model => model.Client)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.Doctor)
             </th>
             <th></th>
         </tr>
@@ -38,13 +40,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                @Html.DisplayFor(modelItem => item.DateTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Phone)
+                @Html.DisplayFor(modelItem => item.Client.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Email)
+                @Html.DisplayFor(modelItem => item.Doctor.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

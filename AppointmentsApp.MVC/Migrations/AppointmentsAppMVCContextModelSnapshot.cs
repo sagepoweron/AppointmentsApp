@@ -17,6 +17,30 @@ namespace AppointmentsApp.MVC.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
 
+            modelBuilder.Entity("AppointmentsApp.Data.Models.Appointment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("DoctorId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("Appointment");
+                });
+
             modelBuilder.Entity("AppointmentsApp.Data.Models.Client", b =>
                 {
                     b.Property<Guid>("Id")
@@ -40,12 +64,12 @@ namespace AppointmentsApp.MVC.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("68fc7e78-9b26-45b3-ab8d-582023834e84"),
+                            Id = new Guid("1d59654c-cc81-4853-8baa-7a4eb96e041d"),
                             Name = "Client1"
                         },
                         new
                         {
-                            Id = new Guid("89bbf2fb-a35b-4935-8ff5-3bcef0f33a50"),
+                            Id = new Guid("daafcbce-5972-49ac-98ec-6614b70ea4a0"),
                             Name = "Client2"
                         });
                 });
@@ -73,14 +97,33 @@ namespace AppointmentsApp.MVC.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("1ff735dd-2da7-4322-8d92-9f775060251d"),
+                            Id = new Guid("9b899eaf-f906-467c-87c6-38b0b3015e9a"),
                             Name = "Doctor1"
                         },
                         new
                         {
-                            Id = new Guid("1001fdaf-2aee-4280-b819-38f649d03eb0"),
+                            Id = new Guid("8e44aa0c-83df-4ae8-94df-62177f109ed9"),
                             Name = "Doctor2"
                         });
+                });
+
+            modelBuilder.Entity("AppointmentsApp.Data.Models.Appointment", b =>
+                {
+                    b.HasOne("AppointmentsApp.Data.Models.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AppointmentsApp.Data.Models.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Doctor");
                 });
 #pragma warning restore 612, 618
         }

@@ -21,21 +21,23 @@ namespace AppointmentsApp.MVC.Controllers
         }
 
         // GET: Doctors
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index()
+        //{
+        //    return View(await _context.Doctor.ToListAsync());
+        //}
+
+        public async Task<IActionResult> Index(string name)
         {
-            return View(await _context.Doctor.ToListAsync());
+            if (!string.IsNullOrEmpty(name))
+            {
+                //RAW SQL
+                var parameter = new SqliteParameter("comparison", $"%{name}%");
+                return View(await _context.Doctor.FromSqlRaw("SELECT * FROM Doctor WHERE name LIKE @comparison", parameter).ToListAsync());
+            }
+            
+            var doctors = from doctor in _context.Doctor select doctor;
+            return View(await doctors.ToListAsync());
         }
-
-
-        public async Task<IActionResult> Search(string name)
-        {
-            //RAW SQL
-            var parameter = new SqliteParameter("comparison", $"%{name}%");
-            return View(await _context.Doctor.FromSqlRaw("SELECT * FROM Doctor WHERE name LIKE @comparison", parameter).ToListAsync());
-        }
-
-
-
 
 
 

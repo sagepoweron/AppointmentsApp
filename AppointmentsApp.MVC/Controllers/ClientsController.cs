@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AppointmentsApp.Data.Models;
 using AppointmentsApp.MVC.Data;
+using Microsoft.Data.Sqlite;
 
 namespace AppointmentsApp.MVC.Controllers
 {
@@ -19,14 +20,30 @@ namespace AppointmentsApp.MVC.Controllers
             _context = context;
         }
 
-        // GET: Clients
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Client.ToListAsync());
-        }
 
-        // GET: Clients/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+
+		public async Task<IActionResult> Index(string name)
+		{
+			if (!string.IsNullOrEmpty(name))
+			{
+				//RAW SQL
+				var parameter = new SqliteParameter("comparison", $"%{name}%");
+				return View(await _context.Client.FromSqlRaw("SELECT * FROM Client WHERE name LIKE @comparison", parameter).ToListAsync());
+			}
+
+			var clients = from client in _context.Client select client;
+			return View(await clients.ToListAsync());
+		}
+
+
+		// GET: Clients
+		//public async Task<IActionResult> Index()
+		//{
+		//    return View(await _context.Client.ToListAsync());
+		//}
+
+		// GET: Clients/Details/5
+		public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {
