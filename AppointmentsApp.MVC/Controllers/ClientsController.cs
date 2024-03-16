@@ -1,57 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AppointmentsApp.Data.Models;
+using AppointmentsApp.Data.Repositories;
+using AppointmentsApp.Data.Validators;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using AppointmentsApp.Data.Models;
-using AppointmentsApp.MVC.Data;
-using Microsoft.Data.Sqlite;
 
 namespace AppointmentsApp.MVC.Controllers
 {
     public class ClientsController : Controller
     {
-        private readonly AppointmentsAppMVCContext _context;
+        private readonly IClientRepository _client_repository;
 
-        public ClientsController(AppointmentsAppMVCContext context)
+        public ClientsController(IClientRepository client_repository)
         {
-            _context = context;
+            _client_repository = client_repository;
         }
 
+        public async Task<IActionResult> Index(string name)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                return View(await _client_repository.GetClientsLikeNameAsync(name));
+            }
 
+            return View(await _client_repository.GetAllClientsAsync());
+        }
 
-		public async Task<IActionResult> Index(string name)
-		{
-			if (!string.IsNullOrEmpty(name))
-			{
-				//RAW SQL
-				var parameter = new SqliteParameter("comparison", $"%{name}%");
-				return View(await _context.Client.FromSqlRaw("SELECT * FROM Client WHERE name LIKE @comparison", parameter).ToListAsync());
-			}
-
-			var clients = from client in _context.Client select client;
-			return View(await clients.ToListAsync());
-		}
-
-
-		// GET: Clients
-		//public async Task<IActionResult> Index()
-		//{
-		//    return View(await _context.Client.ToListAsync());
-		//}
-
-		// GET: Clients/Details/5
-		public async Task<IActionResult> Details(Guid? id)
+        // GET: Clients/Details/5
+        public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var client = await _context.Client
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var client = await _client_repository.GetClientByIdAsync(id);
             if (client == null)
             {
                 return NotFound();
@@ -73,11 +55,16 @@ namespace AppointmentsApp.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Phone,Email")] Client client)
         {
+            var validator = new PersonValidator();
+            if (!validator.Validate(client).IsValid)
+            {
+                return View(client);
+            }
+
             if (ModelState.IsValid)
             {
                 client.Id = Guid.NewGuid();
-                _context.Add(client);
-                await _context.SaveChangesAsync();
+                await _client_repository.AddClientAsync(client);
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
@@ -91,7 +78,7 @@ namespace AppointmentsApp.MVC.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Client.FindAsync(id);
+            var client = await _client_repository.GetClientByIdAsync(id);
             if (client == null)
             {
                 return NotFound();
@@ -115,12 +102,11 @@ namespace AppointmentsApp.MVC.Controllers
             {
                 try
                 {
-                    _context.Update(client);
-                    await _context.SaveChangesAsync();
+                    await _client_repository.UpdateClientAsync(client);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ClientExists(client.Id))
+                    if (!_client_repository.ClientExists(client.Id))
                     {
                         return NotFound();
                     }
@@ -142,8 +128,7 @@ namespace AppointmentsApp.MVC.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Client
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var client = await _client_repository.GetClientByIdAsync(id);
             if (client == null)
             {
                 return NotFound();
@@ -157,19 +142,13 @@ namespace AppointmentsApp.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var client = await _context.Client.FindAsync(id);
+            var client = await _client_repository.GetClientByIdAsync(id);
             if (client != null)
             {
-                _context.Client.Remove(client);
+                await _client_repository.DeleteClientAsync(client);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ClientExists(Guid id)
-        {
-            return _context.Client.Any(e => e.Id == id);
         }
     }
 }

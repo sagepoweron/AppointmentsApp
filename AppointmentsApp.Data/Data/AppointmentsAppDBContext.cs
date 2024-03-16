@@ -1,31 +1,32 @@
 ﻿using AppointmentsApp.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace AppointmentsApp.API.Data
+namespace AppointmentsApp.Data.Data
 {
-    public class AppointmentsAppAPIContext : DbContext
+    public class AppointmentsAppDBContext : DbContext
     {
-        public AppointmentsAppAPIContext(DbContextOptions<AppointmentsAppAPIContext> options)
+        public AppointmentsAppDBContext(DbContextOptions<AppointmentsAppDBContext> options)
             : base(options)
         {
         }
 
-        public DbSet<Client> Client { get; set; } = default!;
-        public DbSet<Doctor> Doctor { get; set; } = default!;
-        public DbSet<Appointment> Appointment { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             Client client1 = new()
             {
                 Id = Guid.NewGuid(),
-                Name = "Client1"
+                Name = "Bill",
+                Phone = "555-555-1000",
+                Email = "bill@gmail.com"
             };
 
             Client client2 = new()
             {
                 Id = Guid.NewGuid(),
-                Name = "Client2"
+                Name = "Jeff",
+                Phone = "555-555-2000",
+                Email = "jeff@outlook.com"
             };
 
             modelBuilder.Entity<Client>().HasData(client1, client2);
@@ -44,17 +45,11 @@ namespace AppointmentsApp.API.Data
 
             modelBuilder.Entity<Doctor>().HasData(doctor1, doctor2);
 
-            //Appointment appointment1 = new()
-            //{
-            //    Id = Guid.NewGuid(),
-            //    ClientId = client1.Id,
-            //    DoctorId = doctor1.Id,
-            //    DateTime = DateTime.Now.AddDays(1)
-            //};
-
-            //modelBuilder.Entity<Appointment>().HasData(appointment1);
-
             base.OnModelCreating(modelBuilder);
         }
+
+        public DbSet<Doctor> Doctor { get; set; } = default!;
+        public DbSet<Client> Client { get; set; } = default!;
+        public DbSet<Appointment> Appointment { get; set; } = default!;
     }
 }

@@ -1,4 +1,4 @@
-﻿using AppointmentsApp.API.Data;
+﻿using AppointmentsApp.Data.Data;
 using AppointmentsApp.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,9 +9,9 @@ namespace AppointmentsApp.API.Controllers
     [ApiController]
     public class ClientsController : ControllerBase
     {
-        private readonly AppointmentsAppAPIContext _context;
+        private readonly AppointmentsAppDBContext _context;
 
-        public ClientsController(AppointmentsAppAPIContext context)
+        public ClientsController(AppointmentsAppDBContext context)
         {
             _context = context;
         }

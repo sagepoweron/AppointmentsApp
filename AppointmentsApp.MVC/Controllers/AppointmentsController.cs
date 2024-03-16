@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AppointmentsApp.Data.Data;
+using AppointmentsApp.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using AppointmentsApp.Data.Models;
-using AppointmentsApp.MVC.Data;
-using Microsoft.Data.Sqlite;
 
 namespace AppointmentsApp.MVC.Controllers
 {
     public class AppointmentsController : Controller
     {
-        private readonly AppointmentsAppMVCContext _context;
+        private readonly AppointmentsAppDBContext _context;
 
-        public AppointmentsController(AppointmentsAppMVCContext context)
+        public AppointmentsController(AppointmentsAppDBContext context)
         {
             _context = context;
         }
@@ -25,7 +20,7 @@ namespace AppointmentsApp.MVC.Controllers
         // GET: Appointments
         public async Task<IActionResult> Index(string client_name, string doctor_name)
         {
-			var appointments = from appointment in _context.Appointment.Include(a => a.Client).Include(a => a.Doctor) select appointment;
+            var appointments = from appointment in _context.Appointment.Include(a => a.Client).Include(a => a.Doctor) select appointment;
 
             if (!string.IsNullOrEmpty(client_name))
             {

@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace AppointmentsApp.MVC.Migrations
+namespace AppointmentsApp.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -72,8 +72,8 @@ namespace AppointmentsApp.MVC.Migrations
                 columns: new[] { "Id", "Email", "Name", "Phone" },
                 values: new object[,]
                 {
-                    { new Guid("1d59654c-cc81-4853-8baa-7a4eb96e041d"), null, "Client1", null },
-                    { new Guid("daafcbce-5972-49ac-98ec-6614b70ea4a0"), null, "Client2", null }
+                    { new Guid("35cdf8db-1f63-4079-be6f-9bc53e72e112"), "jeff@outlook.com", "Jeff", "555-555-2000" },
+                    { new Guid("cd9f0295-18af-4bcc-92e9-98f29396cb1d"), "bill@gmail.com", "Bill", "555-555-1000" }
                 });
 
             migrationBuilder.InsertData(
@@ -81,8 +81,8 @@ namespace AppointmentsApp.MVC.Migrations
                 columns: new[] { "Id", "Email", "Name", "Phone" },
                 values: new object[,]
                 {
-                    { new Guid("8e44aa0c-83df-4ae8-94df-62177f109ed9"), null, "Doctor2", null },
-                    { new Guid("9b899eaf-f906-467c-87c6-38b0b3015e9a"), null, "Doctor1", null }
+                    { new Guid("523147d2-e859-4252-be19-504246ccc17c"), null, "Doctor2", null },
+                    { new Guid("656b3100-c63d-45fd-af86-bf76908d98f0"), null, "Doctor1", null }
                 });
 
             migrationBuilder.CreateIndex(

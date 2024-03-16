@@ -1,4 +1,4 @@
-﻿using AppointmentsApp.API.Data;
+﻿using AppointmentsApp.Data.Data;
 using AppointmentsApp.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
@@ -12,9 +12,9 @@ namespace AppointmentsApp.API.Controllers
     [ApiController]
     public class DoctorsController : ControllerBase
     {
-        private readonly AppointmentsAppAPIContext _context;
+        private readonly AppointmentsAppDBContext _context;
 
-        public DoctorsController(AppointmentsAppAPIContext context)
+        public DoctorsController(AppointmentsAppDBContext context)
         {
             _context = context;
         }

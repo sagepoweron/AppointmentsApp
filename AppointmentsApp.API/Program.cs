@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using AppointmentsApp.API.Data;
+﻿using AppointmentsApp.Data.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentsApp.API
 {
@@ -9,7 +8,7 @@ namespace AppointmentsApp.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddDbContext<AppointmentsAppAPIContext>(options =>
+            builder.Services.AddDbContext<AppointmentsAppDBContext>(options =>
             //options.UseSqlite("Data Source=AppointmentsAppAPIContext-03cb93f6-490c-4a83-b4e5-33b02b068fd5.db"));
                 options.UseSqlite(builder.Configuration.GetConnectionString("AppointmentsAppAPIContext") ?? throw new InvalidOperationException("Connection string 'AppointmentsAppAPIContext' not found."))); ;
 

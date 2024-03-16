@@ -1,21 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using AppointmentsApp.Data.Data;
 using AppointmentsApp.Data.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
-using AppointmentsApp.MVC.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentsApp.MVC.Controllers
 {
     public class DoctorsController : Controller
     {
-        private readonly AppointmentsAppMVCContext _context;
+        private readonly AppointmentsAppDBContext _context;
 
-        public DoctorsController(AppointmentsAppMVCContext context)
+        public DoctorsController(AppointmentsAppDBContext context)
         {
             _context = context;
         }
@@ -34,7 +29,7 @@ namespace AppointmentsApp.MVC.Controllers
                 var parameter = new SqliteParameter("comparison", $"%{name}%");
                 return View(await _context.Doctor.FromSqlRaw("SELECT * FROM Doctor WHERE name LIKE @comparison", parameter).ToListAsync());
             }
-            
+
             var doctors = from doctor in _context.Doctor select doctor;
             return View(await doctors.ToListAsync());
         }
