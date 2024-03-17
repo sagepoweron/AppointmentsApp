@@ -2,7 +2,7 @@
 
 namespace AppointmentsApp.Data.Repositories
 {
-    public interface IClientRepository : IPersonRepository<Client>
+    public interface IDoctorRepository : IPersonRepository<Doctor>
     {
     }
 }

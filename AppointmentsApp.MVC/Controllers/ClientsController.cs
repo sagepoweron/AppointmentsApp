@@ -17,12 +17,7 @@ namespace AppointmentsApp.MVC.Controllers
 
         public async Task<IActionResult> Index(string name)
         {
-            if (!string.IsNullOrEmpty(name))
-            {
-                return View(await _client_repository.GetClientsLikeNameAsync(name));
-            }
-
-            return View(await _client_repository.GetAllClientsAsync());
+            return View(await _client_repository.GetLikeNameAsync(name));
         }
 
         // GET: Clients/Details/5
@@ -33,7 +28,7 @@ namespace AppointmentsApp.MVC.Controllers
                 return NotFound();
             }
 
-            var client = await _client_repository.GetClientByIdAsync(id);
+            var client = await _client_repository.GetByIdAsync(id);
             if (client == null)
             {
                 return NotFound();
@@ -61,10 +56,17 @@ namespace AppointmentsApp.MVC.Controllers
                 return View(client);
             }
 
+            if (!Helpers.ValidateName(client.Name))
+            {
+                return View(client);
+            }
+
+
             if (ModelState.IsValid)
             {
                 client.Id = Guid.NewGuid();
-                await _client_repository.AddClientAsync(client);
+                _client_repository.Add(client);
+                await _client_repository.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
@@ -78,7 +80,7 @@ namespace AppointmentsApp.MVC.Controllers
                 return NotFound();
             }
 
-            var client = await _client_repository.GetClientByIdAsync(id);
+            var client = await _client_repository.GetByIdAsync(id);
             if (client == null)
             {
                 return NotFound();
@@ -102,11 +104,12 @@ namespace AppointmentsApp.MVC.Controllers
             {
                 try
                 {
-                    await _client_repository.UpdateClientAsync(client);
+                    _client_repository.Update(client);
+                    await _client_repository.SaveAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_client_repository.ClientExists(client.Id))
+                    if (!_client_repository.Exists(client.Id))
                     {
                         return NotFound();
                     }
@@ -128,7 +131,7 @@ namespace AppointmentsApp.MVC.Controllers
                 return NotFound();
             }
 
-            var client = await _client_repository.GetClientByIdAsync(id);
+            var client = await _client_repository.GetByIdAsync(id);
             if (client == null)
             {
                 return NotFound();
@@ -142,11 +145,13 @@ namespace AppointmentsApp.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var client = await _client_repository.GetClientByIdAsync(id);
+            var client = await _client_repository.GetByIdAsync(id);
             if (client != null)
             {
-                await _client_repository.DeleteClientAsync(client);
+                _client_repository.Delete(client);
             }
+
+            await _client_repository.SaveAsync();
 
             return RedirectToAction(nameof(Index));
         }

@@ -15,6 +15,7 @@ namespace AppointmentsApp.MVC
 			builder.Services.AddControllersWithViews();
 
             builder.Services.AddTransient<IClientRepository, ClientRepository>();
+			builder.Services.AddTransient<IDoctorRepository, DoctorRepository>();
 
             var app = builder.Build();
 

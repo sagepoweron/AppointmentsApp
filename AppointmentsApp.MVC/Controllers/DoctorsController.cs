@@ -1,18 +1,17 @@
-﻿using AppointmentsApp.Data.Data;
-using AppointmentsApp.Data.Models;
+﻿using AppointmentsApp.Data.Models;
+using AppointmentsApp.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppointmentsApp.MVC.Controllers
 {
     public class DoctorsController : Controller
     {
-        private readonly AppointmentsAppDBContext _context;
+        private readonly IDoctorRepository _doctor_repository;
 
-        public DoctorsController(AppointmentsAppDBContext context)
+        public DoctorsController(IDoctorRepository doctor_repository)
         {
-            _context = context;
+            _doctor_repository = doctor_repository;
         }
 
         // GET: Doctors
@@ -23,15 +22,7 @@ namespace AppointmentsApp.MVC.Controllers
 
         public async Task<IActionResult> Index(string name)
         {
-            if (!string.IsNullOrEmpty(name))
-            {
-                //RAW SQL
-                var parameter = new SqliteParameter("comparison", $"%{name}%");
-                return View(await _context.Doctor.FromSqlRaw("SELECT * FROM Doctor WHERE name LIKE @comparison", parameter).ToListAsync());
-            }
-
-            var doctors = from doctor in _context.Doctor select doctor;
-            return View(await doctors.ToListAsync());
+            return View(await _doctor_repository.GetLikeNameAsync(name));
         }
 
 
@@ -44,8 +35,7 @@ namespace AppointmentsApp.MVC.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctor
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var doctor = await _doctor_repository.GetByIdAsync(id);
             if (doctor == null)
             {
                 return NotFound();
@@ -70,8 +60,8 @@ namespace AppointmentsApp.MVC.Controllers
             if (ModelState.IsValid)
             {
                 doctor.Id = Guid.NewGuid();
-                _context.Add(doctor);
-                await _context.SaveChangesAsync();
+                _doctor_repository.Add(doctor);
+                await _doctor_repository.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(doctor);
@@ -85,7 +75,7 @@ namespace AppointmentsApp.MVC.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctor.FindAsync(id);
+            var doctor = await _doctor_repository.GetByIdAsync(id);
             if (doctor == null)
             {
                 return NotFound();
@@ -109,12 +99,12 @@ namespace AppointmentsApp.MVC.Controllers
             {
                 try
                 {
-                    _context.Update(doctor);
-                    await _context.SaveChangesAsync();
+                    _doctor_repository.Update(doctor);
+                    await _doctor_repository.SaveAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DoctorExists(doctor.Id))
+                    if (!_doctor_repository.Exists(doctor.Id))
                     {
                         return NotFound();
                     }
@@ -136,8 +126,7 @@ namespace AppointmentsApp.MVC.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctor
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var doctor = await _doctor_repository.GetByIdAsync(id);
             if (doctor == null)
             {
                 return NotFound();
@@ -151,19 +140,14 @@ namespace AppointmentsApp.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var doctor = await _context.Doctor.FindAsync(id);
+            var doctor = await _doctor_repository.GetByIdAsync(id);
             if (doctor != null)
             {
-                _context.Doctor.Remove(doctor);
+                _doctor_repository.Delete(doctor);
+                await _doctor_repository.SaveAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool DoctorExists(Guid id)
-        {
-            return _context.Doctor.Any(e => e.Id == id);
         }
     }
 }
