@@ -4,6 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
+@{
+    var count_text = ViewData["CountText"];
+}
+
 <h1>Doctors</h1>
 
 <p>
@@ -19,6 +23,7 @@
     </p>
 </form>
 
+<div>@count_text</div>
 
 <table class="table">
     <thead>

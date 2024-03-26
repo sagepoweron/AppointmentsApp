@@ -29,20 +29,6 @@ namespace AppointmentsApp.Data.Repositories
         {
             return await _context.Doctor.ToListAsync();
         }
-        public async Task<List<Doctor>> GetLikeNameAsync(string name)
-        {
-            if (!string.IsNullOrEmpty(name))
-            {
-                //RAW SQL
-                var parameter = new SqliteParameter("comparison", $"%{name}%");
-                return await _context.Doctor.FromSqlRaw("SELECT * FROM Doctor WHERE name LIKE @comparison", parameter).ToListAsync();
-            }
-
-            var doctors = from doctor in _context.Doctor select doctor;
-            return await doctors.ToListAsync();
-        }
-
-
 
         public void Add(Doctor doctor)
         {
@@ -67,22 +53,28 @@ namespace AppointmentsApp.Data.Repositories
             return _context.Doctor.FirstOrDefault(x => x.Id == id);
         }
 
-        public List<Doctor> GetLikeName(string name)
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+
+        public int GetTotal()
+        {
+            //RAW SQL
+            return _context.Doctor.FromSqlRaw("SELECT * FROM Doctor").Count();
+        }
+
+        public IQueryable<Doctor> QueryLikeName(string name)
         {
             if (!string.IsNullOrEmpty(name))
             {
                 //RAW SQL
                 var parameter = new SqliteParameter("comparison", $"%{name}%");
-                return _context.Doctor.FromSqlRaw("SELECT * FROM Doctor WHERE name LIKE @comparison", parameter).ToList();
+                return _context.Doctor.FromSqlRaw("SELECT * FROM Doctor WHERE name LIKE @comparison", parameter);
             }
 
-            var doctors = from doctor in _context.Doctor select doctor;
-            return doctors.ToList();
-        }
-
-        public async Task SaveAsync()
-        {
-            await _context.SaveChangesAsync();
+            var query = from doctor in _context.Doctor select doctor;
+            return query;
         }
     }
 }

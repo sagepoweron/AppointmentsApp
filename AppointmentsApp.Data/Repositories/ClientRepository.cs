@@ -32,20 +32,6 @@ namespace AppointmentsApp.Data.Repositories
         {
             return await _context.Client.ToListAsync();
         }
-        public async Task<List<Client>> GetLikeNameAsync(string name)
-        {
-            if (!string.IsNullOrEmpty(name))
-            {
-                //RAW SQL
-                var parameter = new SqliteParameter("comparison", $"%{name}%");
-                return await _context.Client.FromSqlRaw("SELECT * FROM Client WHERE name LIKE @comparison", parameter).ToListAsync();
-            }
-
-            var clients = from client in _context.Client select client;
-            return await clients.ToListAsync();
-        }
-
-
 
 
         public void Add(Client client)
@@ -71,17 +57,24 @@ namespace AppointmentsApp.Data.Repositories
             return _context.Client.FirstOrDefault(x => x.Id == id);
         }
 
-        public List<Client> GetLikeName(string name)
+
+        public int GetTotal()
+        {
+            //RAW SQL
+            return _context.Client.FromSqlRaw("SELECT * FROM Client").Count();
+        }
+
+        public IQueryable<Client> QueryLikeName(string name)
         {
             if (!string.IsNullOrEmpty(name))
             {
                 //RAW SQL
                 var parameter = new SqliteParameter("comparison", $"%{name}%");
-                return _context.Client.FromSqlRaw("SELECT * FROM Client WHERE name LIKE @comparison", parameter).ToList();
+                return _context.Client.FromSqlRaw("SELECT * FROM Client WHERE name LIKE @comparison", parameter);
             }
 
             var clients = from client in _context.Client select client;
-            return clients.ToList();
+            return clients;
         }
     }
 }

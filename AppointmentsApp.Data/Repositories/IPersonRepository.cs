@@ -1,4 +1,6 @@
-﻿namespace AppointmentsApp.Data.Repositories
+﻿using AppointmentsApp.Data.Models;
+
+namespace AppointmentsApp.Data.Repositories
 {
     public interface IPersonRepository<T>
     {
@@ -9,8 +11,8 @@
         Task<List<T>> GetAllAsync();
         T? GetById(Guid? id);
         Task<T?> GetByIdAsync(Guid? id);
-        List<T> GetLikeName(string name);
-        Task<List<T>> GetLikeNameAsync(string name);
+        int GetTotal();
+        IQueryable<T> QueryLikeName(string name);
         Task SaveAsync();
         void Update(T entity);
     }

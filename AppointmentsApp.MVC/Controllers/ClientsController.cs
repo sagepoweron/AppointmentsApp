@@ -17,7 +17,12 @@ namespace AppointmentsApp.MVC.Controllers
 
         public async Task<IActionResult> Index(string name)
         {
-            return View(await _client_repository.GetLikeNameAsync(name));
+            IQueryable<Client> query = _client_repository.QueryLikeName(name);
+
+            int count = _client_repository.GetTotal();
+            int filtered_count = query.Count();
+            ViewData["CountText"] = $"Total: {count} Filtered {filtered_count}";
+            return View(await query.ToListAsync());
         }
 
         // GET: Clients/Details/5
